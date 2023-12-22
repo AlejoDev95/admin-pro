@@ -1,11 +1,15 @@
-import express from "express";
-import { connectDB } from "./database";
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express from "express";
+
+import { connectDB, corsOption } from "./config";
 
 dotenv.config();
+const app = express();
+
 connectDB();
 
-const app = express();
+app.use(cors(corsOption));
 app.use(express.json());
 
 app.get("/ping", (_req, res) => {
