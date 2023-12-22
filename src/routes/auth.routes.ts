@@ -4,7 +4,7 @@ import { check } from "express-validator";
 import { validateFields } from "../middlewares";
 import { login } from "../controllers";
 
-export const authRoute = Router();
+const authRoute = Router();
 
 authRoute.post(
   "/login",
@@ -15,3 +15,5 @@ authRoute.post(
   ],
   login
 );
+
+export { authRoute };

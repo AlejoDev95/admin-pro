@@ -3,7 +3,7 @@ import { check } from "express-validator";
 import { validateFields, validteJWT } from "../middlewares";
 import { createUsers, deleteUser, getUsers, updateUser } from "../controllers";
 
-export const userRoute = Router();
+const userRoute = Router();
 
 userRoute.get("/", validteJWT, getUsers);
 
@@ -22,3 +22,5 @@ userRoute.post(
 userRoute.put("/:id", validteJWT, updateUser);
 
 userRoute.delete("/:id", validteJWT, deleteUser);
+
+export { userRoute };

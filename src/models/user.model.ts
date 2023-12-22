@@ -1,6 +1,11 @@
-import { prop, getModelForClass } from "@typegoose/typegoose";
+import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose";
 
-class User {
+@modelOptions({
+  schemaOptions: {
+    timestamps: true,
+  }
+})
+export class User {
   @prop({ type: String, required: true, trim: true })
   name: string = "";
 
