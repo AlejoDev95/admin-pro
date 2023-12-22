@@ -38,7 +38,7 @@ export const createUsers = async (req: Request, res: Response) => {
     console.error(`Unexpected error creating user: ${error}`);
     res
       .status(500)
-      .json({ ok: false, user: "Unexpected error creating user, check logs" });
+      .json({ ok: false, message: "Unexpected error creating user, check logs" });
   }
 };
 

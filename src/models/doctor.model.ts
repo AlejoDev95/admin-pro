@@ -26,4 +26,6 @@ class Doctor {
   hospital: Ref<Hospital> | undefined;
 }
 
-export const DoctorSchema = getModelForClass(Doctor);
+const DoctorSchema = getModelForClass(Doctor);
+
+export { Doctor, DoctorSchema };

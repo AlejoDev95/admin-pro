@@ -3,9 +3,9 @@ import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose";
 @modelOptions({
   schemaOptions: {
     timestamps: true,
-  }
+  },
 })
-export class User {
+class User {
   @prop({ type: String, required: true, trim: true })
   name: string = "";
 
@@ -25,9 +25,9 @@ export class User {
   google?: boolean = false;
 }
 
-export const UserSchema = getModelForClass(User);
+const UserSchema = getModelForClass(User);
 
-UserSchema.schema.set('toJSON', {
+UserSchema.schema.set("toJSON", {
   transform: (_, ret) => {
     ret.uid = ret._id;
     delete ret._id;
@@ -36,6 +36,4 @@ UserSchema.schema.set('toJSON', {
   },
 });
 
-
-
-
+export { UserSchema, User };

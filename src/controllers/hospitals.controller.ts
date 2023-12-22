@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
+import { HospitalSchema } from "../models";
 
-export const createHospital = async (_req: Request, res: Response) => {
+export const createHospital = async (req: Request, res: Response) => {
   try {
-    res.json({ ok: true, message: "CreateHospital" });
+    const uid = req.uid;
+    const hospitalSchema = new HospitalSchema({
+      userCreation: uid,
+      ...req.body,
+    });
+    const hospitalCreated = await hospitalSchema.save();
+    res.json({ ok: true, hospital: hospitalCreated });
   } catch (error) {
     console.error(`Unexpected error when creating a hospital, check logs`);
     res.status(500).json({

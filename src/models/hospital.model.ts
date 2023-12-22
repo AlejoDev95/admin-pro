@@ -18,8 +18,18 @@ export class Hospital {
   @prop({ type: String, trim: true })
   image?: string = "";
 
-  @prop({ ref: () => User })
-  userCreation: Ref<User> | undefined;
+  @prop({ ref: () => User, required: true })
+    userCreation!: Ref<User>;
 }
 
-export const HospitalSchema = getModelForClass(Hospital);
+const HospitalSchema = getModelForClass(Hospital);
+
+HospitalSchema.schema.set("toJSON", {
+  transform: (_, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.__v;
+  },
+});
+
+export { HospitalSchema };
