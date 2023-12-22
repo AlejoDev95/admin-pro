@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { CustomRequest } from "../interfaces";
 
 export const validteJWT = async (
   req: Request,
@@ -19,7 +18,7 @@ export const validteJWT = async (
   try {
     const secretKey = process.env.JWT_SECRET ?? "";
     const { uid } = jwt.verify(token, secretKey) as JwtPayload;
-    (req as CustomRequest).uid = uid;
+    req.uid = uid;
     next();
   } catch (error) {
     res.status(401).json({ ok: false, message: "Token invalid" });
