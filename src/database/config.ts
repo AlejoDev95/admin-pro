@@ -2,9 +2,7 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
   try {
-    const db = await mongoose.connect(
-      "mongodb+srv://alejoDev95:qBdVIwc62gTpHhDR@alejodev.aunizba.mongodb.net/hospitalDB"
-    );
+    const db = await mongoose.connect(process.env.DB_CNN ?? "");
     console.log("database is connected to", db.connection.db.databaseName);
   } catch (error) {
     console.error('database connection error');
