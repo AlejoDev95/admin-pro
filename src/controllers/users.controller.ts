@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { UserSchema } from "../models";
+import { generateToken } from "../helpers";
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -30,8 +31,9 @@ export const createUsers = async (req: Request, res: Response) => {
     const salt = bcrypt.genSaltSync();
     const user = new UserSchema(req.body);
     user.password = bcrypt.hashSync(password, salt);
+    const token = await generateToken(user.id);
     const newUser = await user.save();
-    res.status(200).json({ ok: true, user: newUser });
+    res.status(200).json({ ok: true, user: newUser, token });
   } catch (error) {
     console.error(`Unexpected error creating user: ${error}`);
     res
