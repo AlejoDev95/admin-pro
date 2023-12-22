@@ -36,7 +36,7 @@ export const deleteHospital = async (_req: Request, res: Response) => {
   }
 };
 
-export const updateHospital = async (_req: Request, res: Response) => {
+export const updateHospitals = async (_req: Request, res: Response) => {
   try {
     res.json({ ok: true, message: "updateHospital" });
   } catch (error) {

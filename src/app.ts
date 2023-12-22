@@ -1,8 +1,8 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { authRoute, hospitalsRouter, userRoute } from "./routes";
 
+import { authRoute, hospitalsRouter, userRoute, doctorRouter } from "./routes";
 import { connectDB, corsOption } from "./config";
 
 dotenv.config();
@@ -14,6 +14,7 @@ app.use(cors(corsOption));
 app.use(express.json());
 
 app.use("/api/auth", authRoute);
+app.use("/api/doctors", doctorRouter);
 app.use("/api/hospitals", hospitalsRouter);
 app.use("/api/users", userRoute);
 
