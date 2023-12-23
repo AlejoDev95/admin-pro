@@ -2,18 +2,46 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import fileUpload from "express-fileupload";
 import path from "path";
+import { updateImage } from "../helpers";
+import { isValidObjectId } from "mongoose";
+import { DoctorSchema, HospitalSchema, UserSchema } from "../models";
 
 const validCollections = ["doctors", "hospitals", "users"];
 const validExtension = ["png", "jpg", "jpeg", "gif"];
 
 export const upload = async (req: Request, res: Response) => {
-  const { collection } = req.params;
+  const { collection, id } = req.params;
+  let schemaSelected: any;
+  if (!isValidObjectId(id)) {
+    res.status(400).json({ ok: false, message: `the id ${id} is invalid` });
+    return;
+  }
+
   // Validating collection
   if (!validCollections.includes(collection)) {
     res.status(400).json({
       ok: true,
       message: `The name of the collection is no valid. Only the following are accepted ${validCollections.toString()}`,
     });
+    return;
+  }
+
+  switch (collection) {
+    case "doctors":
+      schemaSelected = await DoctorSchema.findById(id);
+      break;
+    case "hospitals":
+      schemaSelected = await HospitalSchema.findById(id);
+      break;
+    case "users":
+      schemaSelected = await UserSchema.findById(id);
+      break;
+  }
+
+  if (!schemaSelected) {
+    res
+      .status(400)
+      .json({ ok: false, message: `there is not ${collection} with id ${id}` });
     return;
   }
 
@@ -53,6 +81,12 @@ export const upload = async (req: Request, res: Response) => {
       });
       return;
     }
+
+    updateImage({
+      type: collection as "doctors" | "hospitals" | "users",
+      schemaSelected,
+      fileName,
+    });
 
     res
       .status(200)

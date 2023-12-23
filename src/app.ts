@@ -21,5 +21,5 @@ app.use("/api/search", searchRoute);
 app.use("/api/upload", uploadRouter);
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server running on Port ${process.env.PORT}`);
+  console.info(`Server running on Port ${process.env.PORT}`);
 });
