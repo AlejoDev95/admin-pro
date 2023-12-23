@@ -21,9 +21,10 @@ export const createHospital = async (req: Request, res: Response) => {
 
 export const getHospital = async (_req: Request, res: Response) => {
   try {
-    res.json({ ok: true, message: "getHospital" });
+    const listOfHospitals = await HospitalSchema.find().populate("userCreation", "name email -_id");
+    res.json({ ok: true, listOfHospitals });
   } catch (error) {
-    console.error(`Unexpected error in hospital consultation, check logs`);
+    console.error(`Unexpected error in hospital consultation, check logs`, error);
     res.status(500).json({
       ok: false,
       message: `Unexpected error in hospital consultation, check logs`,

@@ -20,7 +20,10 @@ export const createDoctor = async (req: Request, res: Response) => {
 
 export const getDoctors = async (_req: Request, res: Response) => {
   try {
-    res.json({ ok: true, message: "getDoctors" });
+    const listOfDoctors = await DoctorSchema.find()
+      .populate("userCreation", "name -_id")
+      .populate("hospital", "name -_id");
+    res.json({ ok: true, listOfDoctors });
   } catch (error) {
     console.error(`Unexpected error in doctor consultation, check logs`);
     res.status(500).json({
