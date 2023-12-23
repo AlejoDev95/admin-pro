@@ -20,12 +20,20 @@ class Doctor {
   image?: string = "";
 
   @prop({ ref: () => User })
-  userCreation: Ref<User> | undefined;
+  userCreation!: Ref<User>;
 
   @prop({ ref: () => Hospital })
-  hospital: Ref<Hospital> | undefined;
+  hospital!: Ref<Hospital>;
 }
 
 const DoctorSchema = getModelForClass(Doctor);
+
+DoctorSchema.schema.set("toJSON", {
+  transform: (_, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.__v;
+  },
+});
 
 export { Doctor, DoctorSchema };
