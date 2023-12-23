@@ -1,10 +1,12 @@
+import { isValidObjectId } from "mongoose";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import fileUpload from "express-fileupload";
 import path from "path";
+
 import { updateImage } from "../helpers";
-import { isValidObjectId } from "mongoose";
 import { DoctorSchema, HospitalSchema, UserSchema } from "../models";
+import fs from "fs";
 
 const validCollections = ["doctors", "hospitals", "users"];
 const validExtension = ["png", "jpg", "jpeg", "gif"];
@@ -68,8 +70,10 @@ export const upload = async (req: Request, res: Response) => {
   // Generating random image name
   const fileName = `${uuidv4()}.${fileExtension}`;
   // path to save the image
-  const destinationPath = path.join(__dirname, "../../uploads");
-  const uploadPath = `${destinationPath}/${collection}/${fileName}`;
+  const uploadPath = path.join(
+    __dirname,
+    `../../uploads/${collection}/${fileName}`
+  );
 
   // Saving the image
   image.mv(uploadPath, (error) => {
@@ -92,4 +96,37 @@ export const upload = async (req: Request, res: Response) => {
       .status(200)
       .json({ ok: true, message: "File successfully uploaded", fileName });
   });
+};
+
+export const getImage = async (req: Request, res: Response) => {
+  try {
+    const { collection, image } = req.params;
+
+    if (!validCollections.includes(collection)) {
+      res.status(400).json({
+        ok: true,
+        message: `The name of the collection is no valid. Only the following are accepted ${validCollections.toString()}`,
+      });
+      return;
+    }
+
+    const pathImage = path.join(
+      __dirname,
+      `../../uploads/${collection}/${image}`
+    );
+
+    if (!fs.existsSync(pathImage)) {
+      const noImagePath = path.join(__dirname, `../../uploads/no-image.png`);
+      res.status(200).sendFile(noImagePath);
+      return;
+    }
+
+    res.status(200).sendFile(pathImage);
+  } catch (error) {
+    console.error(`Unexpect error when getting the image`, error);
+    res.status(500).json({
+      ok: false,
+      message: `Unexpect error when getting the image, check logs`,
+    });
+  }
 };
