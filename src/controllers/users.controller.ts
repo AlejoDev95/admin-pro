@@ -1,12 +1,17 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { UserSchema } from "../models";
-import { generateToken } from "../helpers";
+import { assingQueryValue, generateToken } from "../helpers";
 
-export const getUsers = async (_req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
-    const listOfUsers = await UserSchema.find();
-    res.status(200).json({ ok: true, listOfUsers });
+    const offset = assingQueryValue(req.query.offset, 0);
+    const limit = assingQueryValue(req.query.limit, 5);
+    const [listOfUsers, totalRecord] = await Promise.all([
+      await UserSchema.find().skip(offset).limit(limit),
+      await UserSchema.countDocuments(),
+    ]);
+    res.status(200).json({ ok: true, totalRecord, listOfUsers });
   } catch (error) {
     console.error(`Unexpected error querying, check logs: ${error}`);
     res
@@ -36,9 +41,10 @@ export const createUsers = async (req: Request, res: Response) => {
     res.status(200).json({ ok: true, user: newUser, token });
   } catch (error) {
     console.error(`Unexpected error creating user: ${error}`);
-    res
-      .status(500)
-      .json({ ok: false, message: "Unexpected error creating user, check logs" });
+    res.status(500).json({
+      ok: false,
+      message: "Unexpected error creating user, check logs",
+    });
   }
 };
 
